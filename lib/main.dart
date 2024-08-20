@@ -8,16 +8,11 @@ class PlantIOApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
-      routes: {
-        '/': (context) => FirstScreen(),
-        '/plantInfo': (context) => PlantInfoScreen(),
-      },
+      home: FirstScreen(),
     );
   }
 }
 
-// Tela inicial
 class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -30,7 +25,7 @@ class FirstScreen extends StatelessWidget {
             Text(
               'PlantIO',
               style: TextStyle(
-                fontFamily: 'Roboto', // Substitua pelo nome correto da fonte usada
+                fontFamily: 'Roboto',
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -38,17 +33,20 @@ class FirstScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Image.asset(
-              'assets/plant_image.png', // Substitua pelo caminho da sua imagem
+              'assets/plant_image.png',
               width: 200,
               height: 200,
             ),
             SizedBox(height: 50),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/plantInfo'); // Navega para a segunda tela
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchScreen()),
+                );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black, // Cor do botão
+                backgroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -69,22 +67,168 @@ class FirstScreen extends StatelessWidget {
   }
 }
 
-// Tela informação planta
+
+class SearchScreen extends StatefulWidget {
+  @override
+  _SearchScreenState createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  List<String> allResults = [
+    'Resultado 1',
+    'Resultado 2',
+    'Resultado 3',
+    'Resultado 4',
+    'Resultado 5',
+    'Resultado 6',
+    'Resultado 7',
+    'Resultado 8',
+    'Resultado 9',
+    'Resultado 10'
+  ];
+  List<String> filteredResults = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_filterResults);
+  }
+
+  void _filterResults() {
+    setState(() {
+      filteredResults = allResults
+          .where((result) => result
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase()))
+          .toList();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFFAB8654),
+      appBar: AppBar(
+        title: Text(
+          'Pesquisar Plantas',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.black,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.camera_alt, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PlantInfoScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                labelText: 'Pesquisar',
+                labelStyle: TextStyle(color: Colors.black),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(color: Colors.black),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(color: Colors.black),
+                ),
+              ),
+              style: TextStyle(color: Colors.black),
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: filteredResults.isEmpty
+                  ? Center(
+                      child: Text(
+                        'Nenhum resultado encontrado',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: filteredResults.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          color: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              filteredResults[index],
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onTap: () {
+                              // Ação ao clicar em um resultado
+                            },
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_filterResults);
+    _searchController.dispose();
+    super.dispose();
+  }
+}
+
+
+
 class PlantInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFAB8654), // Cor de fundo marrom
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      backgroundColor: Color(0xFFAB8654),
+      appBar: AppBar(
+        title: Text(
+          'Informações de Planta',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             Image.asset(
-              'assets/strawberry_plant.png', // Substitua pelo caminho correto da sua imagem
+              'assets/plant_info_image.png',
+              width: 200,
               height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Pé de morango',
+              style: TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
             SizedBox(height: 20),
             Container(
@@ -93,27 +237,10 @@ class PlantInfoScreen extends StatelessWidget {
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Pé de morango',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Consumir morangos regularmente pode melhorar a saúde do coração, regular o açúcar no sangue, e fornecer fibras essenciais para a digestão.',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+              child: Text(
+                'Consumir morangos regularmente pode melhorar a saúde do coração, regular o açúcar no sangue, e fornecer fibras essenciais para a digestão.',
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
               ),
             ),
             SizedBox(height: 30),
@@ -122,40 +249,36 @@ class PlantInfoScreen extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Ação para adicionar saber
+                    // Ação ao clicar no botão Adicionar saber
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   ),
                   child: Text(
                     'Adicionar saber',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Ação para consultar saberes
+                    // Ação ao clicar no botão Consultar saberes
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   ),
                   child: Text(
                     'Consultar saberes',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
               ],
@@ -166,3 +289,5 @@ class PlantInfoScreen extends StatelessWidget {
     );
   }
 }
+
+
