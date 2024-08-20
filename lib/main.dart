@@ -4,6 +4,17 @@ void main() {
   runApp(PlantIOApp());
 }
 
+class Plant {
+  final String name;
+  final String description;
+
+  Plant({
+    required this.name,
+    required this.description,
+  });
+}
+
+
 class PlantIOApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -67,7 +78,6 @@ class FirstScreen extends StatelessWidget {
   }
 }
 
-
 class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -75,34 +85,71 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-  List<String> allResults = [
-    'Resultado 1',
-    'Resultado 2',
-    'Resultado 3',
-    'Resultado 4',
-    'Resultado 5',
-    'Resultado 6',
-    'Resultado 7',
-    'Resultado 8',
-    'Resultado 9',
-    'Resultado 10'
+  List<Plant> _allPlants = [
+    Plant(
+      name: 'Pé de morango',
+      description: 'Descrição: Planta que produz morangos.\n\n'
+          'Usos Medicinais: Melhora a digestão e ajuda a manter a saúde dos olhos.\n\n'
+          'Usos Gerais: Consumido como fruta, em sobremesas e sucos.\n\n'
+          'Curiosidades: Os morangos são tecnicamente um "fruto agregado".',
+    ),
+    Plant(
+      name: 'Pé de alface',
+      description: 'Descrição: Planta de alface popular em saladas.\n\n'
+          'Usos Medicinais: Possui propriedades calmantes e ajuda na digestão.\n\n'
+          'Usos Gerais: Consumido em saladas, sanduíches e pratos variados.\n\n'
+          'Curiosidades: A alface é uma das primeiras plantas cultivadas na história.',
+    ),
+    Plant(
+      name: 'Pé de tomate',
+      description: 'Descrição: Planta que dá tomates.\n\n'
+          'Usos Medicinais: Rica em licopeno, que pode ajudar a reduzir o risco de doenças cardíacas.\n\n'
+          'Usos Gerais: Usado em molhos, saladas e como ingrediente em diversos pratos.\n\n'
+          'Curiosidades: O tomate foi originalmente cultivado como planta ornamental.',
+    ),
+    Plant(
+      name: 'Pé de manjericão',
+      description: 'Descrição: Erva aromática usada em culinária.\n\n'
+          'Usos Medicinais: Possui propriedades antibacterianas e anti-inflamatórias.\n\n'
+          'Usos Gerais: Usado em molhos, pratos italianos e como tempero.\n\n'
+          'Curiosidades: Manjericão é um símbolo de amor e riqueza em algumas culturas.',
+    ),
+    Plant(
+      name: 'Pé de hortelã',
+      description: 'Descrição: Planta de hortelã usada para chás.\n\n'
+          'Usos Medicinais: Alivia problemas digestivos e é um descongestionante natural.\n\n'
+          'Usos Gerais: Usado em chás, sobremesas e como tempero.\n\n'
+          'Curiosidades: A hortelã pode crescer rapidamente e se espalhar se não for controlada.',
+    ),
   ];
-  List<String> filteredResults = [];
+  List<Plant> _filteredPlants = [];
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_filterResults);
+    _filteredPlants = [];
   }
 
-  void _filterResults() {
+  void _filterPlants(String query) {
     setState(() {
-      filteredResults = allResults
-          .where((result) => result
-              .toLowerCase()
-              .contains(_searchController.text.toLowerCase()))
-          .toList();
+      if (query.isEmpty) {
+        _filteredPlants = [];
+      } else {
+        _filteredPlants = _allPlants
+            .where((plant) =>
+                plant.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
     });
+  }
+
+  void _navigateToPlantInfo(Plant plant) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PlantInfoScreen(plant: plant),
+      ),
+    );
   }
 
   @override
@@ -115,85 +162,73 @@ class _SearchScreenState extends State<SearchScreen> {
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.camera_alt, color: Colors.white),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PlantInfoScreen()),
-              );
+              // Ação ao clicar no ícone de câmera
             },
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _searchController,
+              onChanged: _filterPlants,
               decoration: InputDecoration(
-                labelText: 'Pesquisar',
-                labelStyle: TextStyle(color: Colors.black),
+                hintText: 'Digite o nome da planta',
+                prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(color: Colors.black),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              style: TextStyle(color: Colors.black),
             ),
             SizedBox(height: 20),
-            Expanded(
-              child: filteredResults.isEmpty
-                  ? Center(
-                      child: Text(
-                        'Nenhum resultado encontrado',
-                        style: TextStyle(color: Colors.black),
+            if (_searchController.text.isNotEmpty) // Verifica se o campo de pesquisa não está vazio
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _filteredPlants.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      color: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    )
-                  : ListView.builder(
-                      itemCount: filteredResults.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          color: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              filteredResults[index],
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            onTap: () {
-                              // Ação ao clicar em um resultado
-                            },
-                          ),
-                        );
-                      },
-                    ),
-            ),
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        title: Text(
+                          _filteredPlants[index].name,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onTap: () {
+                          _navigateToPlantInfo(_filteredPlants[index]);
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
           ],
         ),
       ),
     );
   }
-
-  @override
-  void dispose() {
-    _searchController.removeListener(_filterResults);
-    _searchController.dispose();
-    super.dispose();
-  }
 }
 
-
-
 class PlantInfoScreen extends StatelessWidget {
+  final Plant plant;
+
+  PlantInfoScreen({required this.plant});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -211,7 +246,8 @@ class PlantInfoScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Center(
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -222,7 +258,7 @@ class PlantInfoScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'Pé de morango',
+              plant.name,
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 24,
@@ -238,9 +274,9 @@ class PlantInfoScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                'Consumir morangos regularmente pode melhorar a saúde do coração, regular o açúcar no sangue, e fornecer fibras essenciais para a digestão.',
+                plant.description,
                 style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
               ),
             ),
             SizedBox(height: 30),
@@ -266,7 +302,7 @@ class PlantInfoScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Ação ao clicar no botão Consultar saberes
+                    // Ação ao clicar no botão Buscar
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -289,5 +325,3 @@ class PlantInfoScreen extends StatelessWidget {
     );
   }
 }
-
-
