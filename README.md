@@ -40,7 +40,3 @@
 - **Saberes Populares:** Consulte e adicione saberes populares relacionados à planta identificada.
 - **Contribuição Comunitária:** Compartilhe seus conhecimentos sobre plantas para que outros usuários possam aprender.
 
-##### Documentação
-
-- A integração com a API de reconhecimento de plantas é feita através de um serviço de terceiros. O código de integração pode ser encontrado na pasta `/lib/services/`.
-- O frontend foi desenvolvido utilizando Flutter, e as rotas principais estão na pasta `/lib/screens/`.
