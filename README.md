@@ -25,7 +25,10 @@
    ```bash
    flutter pub get
    ```
-3. **Conecte um dispositivo Android/iOS ou use um emulador.**
+3. **Instale as pastas para emular o projeto na web:**
+   ```bash
+   flutter create .
+   ```
 4. **Execute o aplicativo:**
    ```bash
    flutter run
