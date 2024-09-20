@@ -1,16 +1,43 @@
-# plantio2
+# PlantIO - Reconhecimento e Saberes Populares de Plantas
 
-A new Flutter project.
+###### Português-BR
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+###### Criado com Flutter, utilizando integração de reconhecimento de imagens e compartilhamento de saberes populares.
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+##### Pontos Iniciais
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- O PlantIO é um aplicativo que permite a identificação de plantas através de fotos tiradas com a câmera do dispositivo, retornando informações sobre a planta e saberes populares relacionados.
+- Os usuários também podem colaborar adicionando novos saberes sobre plantas específicas, enriquecendo o conhecimento disponível no aplicativo.
+- A aplicação está estruturada para rodar em dispositivos Android e iOS, e faz uso de APIs de reconhecimento de plantas para buscar informações detalhadas sobre as espécies.
+  
+##### Como Executar a Aplicação
+É necessário ter o Flutter e as ferramentas de desenvolvimento configuradas corretamente no seu ambiente.
+
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/seuusuario/plantio-app.git
+   ```
+2. **Instale as dependências do projeto:**
+   ```bash
+   flutter pub get
+   ```
+3. **Conecte um dispositivo Android/iOS ou use um emulador.**
+4. **Execute o aplicativo:**
+   ```bash
+   flutter run
+   ```
+
+##### Funcionalidades
+
+- **Reconhecimento de Plantas:** Tire uma foto de uma planta e o PlantIO identificará a espécie e fornecerá informações.
+- **Saberes Populares:** Consulte e adicione saberes populares relacionados à planta identificada.
+- **Contribuição Comunitária:** Compartilhe seus conhecimentos sobre plantas para que outros usuários possam aprender.
+
+##### Documentação
+
+- A integração com a API de reconhecimento de plantas é feita através de um serviço de terceiros. O código de integração pode ser encontrado na pasta `/lib/services/`.
+- O frontend foi desenvolvido utilizando Flutter, e as rotas principais estão na pasta `/lib/screens/`.
